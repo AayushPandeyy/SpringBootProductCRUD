@@ -1,7 +1,9 @@
 package com.example.springcrud.SpringCRUD.controller;
 
+import com.example.springcrud.SpringCRUD.dto.ProductSpecificationDTO;
 import com.example.springcrud.SpringCRUD.entity.Product;
 import com.example.springcrud.SpringCRUD.service.ProductService;
+import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -46,6 +48,12 @@ public class ProductController {
     public ResponseEntity<?> deleteById(@PathVariable("id") Long id){
         productService.deleteById(id);
         return ResponseEntity.ok("Deleted");
+    }
+
+    @PostMapping("/filter")
+    public ResponseEntity<?> specification(@RequestBody ProductSpecificationDTO productSpecificationDTO){
+        Page<Product> productPage = productService.productSpecification(productSpecificationDTO);
+        return ResponseEntity.ok(productPage);
     }
 
 

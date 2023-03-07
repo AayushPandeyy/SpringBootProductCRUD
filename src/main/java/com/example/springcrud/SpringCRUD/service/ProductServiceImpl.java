@@ -1,7 +1,13 @@
 package com.example.springcrud.SpringCRUD.service;
 
+import com.example.springcrud.SpringCRUD.dto.ProductSpecificationDTO;
 import com.example.springcrud.SpringCRUD.entity.Product;
 import com.example.springcrud.SpringCRUD.repo.ProductRepo;
+import com.example.springcrud.SpringCRUD.specification.ProductSpecification;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -48,5 +54,21 @@ public class ProductServiceImpl implements ProductService{
     @Override
     public void deleteById(Long id) {
             productRepo.deleteById(id);
+    }
+
+    @Override
+    public Page<Product> productSpecification(ProductSpecificationDTO productSpecificationDTO) {
+        Pageable pageable = PageRequest.of(productSpecificationDTO.getPageNo(),
+                productSpecificationDTO.getLimit()
+                );
+        Page<Product> products = productRepo.findAll(new ProductSpecification(productSpecificationDTO,productRepo),pageable);
+
+        List<Product> productList = products.getContent();
+
+        Page<Product> productPage = new PageImpl<Product>(productList.stream().toList(),products.getPageable(),products.getTotalElements());
+
+
+
+        return productPage;
     }
 }
